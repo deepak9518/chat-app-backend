@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -7,17 +15,38 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
-
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  login(@Body() dto: LoginAuthDto) {
-    return this.authService.login(dto);
+  async login(@Body() dto: LoginAuthDto, @Res({ passthrough: true }) res) {
+    const { data, message } = await this.authService.login(dto);
+
+    res.cookie('token', data.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+
+    return {
+      message: message || 'User logged in successfully',
+      data,
+    };
   }
 
   @Post('register')
-  register(@Body() dto: RegisterAuthDto) {
-    return this.authService.register(dto);
+  async register(
+    @Body() dto: RegisterAuthDto,
+    @Res({ passthrough: true }) res,
+  ) {
+    const { data, message } = await this.authService.register(dto);
+
+    res.cookie('token', data.token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+
+    return { message, user: data.user };
   }
 
   @Get('me')

@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
 
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -19,12 +19,8 @@ dotenv.config();
         expiresIn: process.env.JWT_EXPIRATION! as any,
       },
     }),
-
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-  ],
+  providers: [AuthService, JwtStrategy],
 })
-export class AuthModule { }
+export class AuthModule {}
