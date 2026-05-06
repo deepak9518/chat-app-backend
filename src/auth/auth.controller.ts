@@ -38,7 +38,7 @@ export class AuthController {
   @Post('register')
   async register(
     @Body() dto: RegisterAuthDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res,
   ) {
     const { data, message } = await this.authService.register(dto);
 
