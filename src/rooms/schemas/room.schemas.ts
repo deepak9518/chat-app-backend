@@ -27,6 +27,10 @@ export class Room {
     },
   ])
   members!: Types.ObjectId[];
+  @Prop({ type: [String], default: [] })
+  inviteEmails?: string[];
+    @Prop({ unique: true })
+  inviteCode?: string;
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);

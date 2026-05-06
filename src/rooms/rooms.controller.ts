@@ -24,16 +24,18 @@ export class RoomsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  create(@Request() req, @Body() createRoomDto: CreateRoomDto) {
-    return this.roomsService.create(req.user._id.toString(), createRoomDto);
+  create(@Body() dto: CreateRoomDto, @Request() req) {
+    return this.roomsService.create(req.user._id, dto);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   getByRequest(@Request() req) {
-    return this.roomsService.getByRequest(req.user._id.toString());
+    return this.roomsService.getByRequest(
+      req.user._id.toString(),
+      req.user.email,
+    );
   }
 
   @Get('personal/:userId')
@@ -56,5 +58,16 @@ export class RoomsController {
     @Request() req,
   ) {
     return this.chatsService.findAll(roomId, query);
+  }
+
+  @Post('join/:inviteCode')
+  @UseGuards(JwtAuthGuard)
+  joinViaCode(@Param('inviteCode') code: string, @Request() req) {
+    return this.roomsService.joinViaCode(code, req.user);
+  }
+  @Post(':roomId/join')
+  @UseGuards(JwtAuthGuard)
+  joinViaInvite(@Param('roomId') roomId: string, @Request() req) {
+    return this.roomsService.joinViaInvite(roomId, req.user);
   }
 }

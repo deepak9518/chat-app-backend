@@ -29,7 +29,7 @@ export class Chat {
   room_id!: Room;
 
   @Prop([{ url: String, type: String, name: String }])
-  attachments!: { url: string; type: string; name: string }[];
+  attachments!: { url: string; type: string; name?: string }[];
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: User.name }],

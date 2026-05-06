@@ -10,6 +10,8 @@ export class ChatsService {
   constructor(@InjectModel(Chat.name) private chatModel: Model<ChatDocument>) {}
 
   async create(senderId: string, createChatDto: CreateChatDto) {
+    console.log(typeof createChatDto.attachments);
+
     const createdChat = new this.chatModel({
       ...createChatDto,
       sender_id: new Types.ObjectId(senderId),
