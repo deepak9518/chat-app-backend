@@ -16,16 +16,18 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+  private cookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none' as const,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  };
 
   @Post('login')
   async login(@Body() dto: LoginAuthDto, @Res({ passthrough: true }) res) {
     const { data, message } = await this.authService.login(dto);
 
-    res.cookie('token', data.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    });
+    res.cookie('token', data.token, this.cookieOptions);
 
     return {
       message: message || 'User logged in successfully',
@@ -36,17 +38,16 @@ export class AuthController {
   @Post('register')
   async register(
     @Body() dto: RegisterAuthDto,
-    @Res({ passthrough: true }) res,
+    @Res({ passthrough: true }) res: Response,
   ) {
     const { data, message } = await this.authService.register(dto);
 
-    res.cookie('token', data.token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    });
+    res.cookie('token', data.token, this.cookieOptions);
 
-    return { message, user: data.user };
+    return {
+      message,
+      user: data.user,
+    };
   }
 
   @Get('me')
@@ -58,12 +59,10 @@ export class AuthController {
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res) {
-    res.clearCookie('token', {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    });
+    res.clearCookie('token', this.cookieOptions);
 
-    return { message: 'Logged out successfully' };
+    return {
+      message: 'Logged out successfully',
+    };
   }
 }
