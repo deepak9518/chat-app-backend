@@ -11,7 +11,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: [
+      'http://localhost:3001',
+      'https://chat-app-frontend-tau-liart.vercel.app',
+    ],
     credentials: true,
   });
   app.useGlobalPipes(new ValidateInputPipe());
