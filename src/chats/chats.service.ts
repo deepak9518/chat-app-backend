@@ -13,7 +13,7 @@ export class ChatsService {
     const createdChat = new this.chatModel({
       ...createChatDto,
       sender_id: new Types.ObjectId(senderId),
-      readBy: [new Types.ObjectId(senderId)], // sender automatically read
+      readBy: [new Types.ObjectId(senderId)],
     });
     return createdChat.save();
   }
@@ -26,6 +26,6 @@ export class ChatsService {
       .find(query)
       .populate('sender_id')
       .sort({ createdAt: -1 })
-      .limit(getChatDto.limit);
+      .limit(Number(getChatDto.limit || 50));
   }
 }

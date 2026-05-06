@@ -9,7 +9,7 @@ import { Chat } from 'src/chats/schemas/chat.schemas';
 export class RoomsService {
   constructor(
     @InjectModel(Room.name) private roomModel: Model<Room>,
-    @InjectModel(Chat.name) private chatModel: Model<Chat>, // add this
+    @InjectModel(Chat.name) private chatModel: Model<Chat>,
   ) {}
 
   async create(userId: string, createRoomDto: CreateRoomDto) {

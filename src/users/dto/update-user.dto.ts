@@ -1,19 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
 
-export class UpdateUserDto  {
+export class UpdateUserDto {
+  @ApiProperty()
+  @IsOptional()
+  name?: string;
 
-    @ApiProperty()
-    readonly about: string;
-
-    @ApiProperty()
-    readonly birthday: Date;
-
-    @ApiProperty()
-    readonly height: number;
-
-    @ApiProperty()
-    readonly weight: number;
-
-    @ApiProperty()
-    readonly interests: number[];
+  @ApiProperty()
+  @IsOptional()
+  avatar?: string;
 }

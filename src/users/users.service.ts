@@ -10,6 +10,9 @@ import { User } from './schemas/user.schemas';
 import { Model, Types } from 'mongoose';
 import { PasswordHashHelper } from 'src/helper/hash/password-hash.helper';
 
+const USER_SAFE_FIELDS =
+  '_id name email online lastSeen avatar createdAt updatedAt';
+
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
@@ -24,7 +27,9 @@ export class UsersService {
     });
 
     try {
-      return await createdUser.save();
+      const saved = await createdUser.save();
+
+      return saved;
     } catch (error) {
       throw new BadRequestException((error as any).message);
     }
@@ -33,8 +38,7 @@ export class UsersService {
   async validateUser(email: string, password: string) {
     const user = await this.userModel
       .findOne({ email })
-      .select('+password')
-      .select('+password_key')
+      .select('+password +password_key')
       .exec();
 
     if (!user) {
@@ -55,7 +59,10 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.userModel.findById(id).exec();
+    const user = await this.userModel
+      .findById(id)
+      .select(USER_SAFE_FIELDS)
+      .lean();
 
     if (!user) {
       throw new NotFoundException('Could not find user.');
@@ -63,11 +70,11 @@ export class UsersService {
 
     return user;
   }
-
   async update(id: string, updateUserDto: UpdateUserDto) {
     const updatedUser = await this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
-      .exec();
+      .select(USER_SAFE_FIELDS)
+      .lean();
 
     if (!updatedUser) {
       throw new NotFoundException('Could not find user.');
@@ -78,9 +85,11 @@ export class UsersService {
       data: updatedUser,
     };
   }
+
   async findAllExcept(userId: string) {
     return this.userModel
       .find({ _id: { $ne: new Types.ObjectId(userId) } })
-      .exec();
+      .select(USER_SAFE_FIELDS)
+      .lean();
   }
 }

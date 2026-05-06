@@ -55,10 +55,10 @@ export class AuthController {
   me(@Request() req) {
     return req.user;
   }
-  
+
   @Post('logout')
   logout(@Res({ passthrough: true }) res) {
-    res.clearCookie('access_token', {
+    res.clearCookie('token', {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',

@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { RoomsModule } from './rooms/rooms.module';
 import { ChatsModule } from './chats/chats.module';
+import { FilesModule } from './files/file.module';
 
 
 @Module({
@@ -38,6 +39,7 @@ import { ChatsModule } from './chats/chats.module';
     AuthModule,
     RoomsModule,
     ChatsModule,
+    FilesModule
   ],
 })
 export class AppModule {}

@@ -71,7 +71,6 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  // ✅ JOIN ROOM
   @SubscribeMessage('joinRoom')
   async handleJoinRoom(client: Socket, roomId: string) {
     console.log('👥 Joining room:', roomId);
@@ -82,7 +81,6 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('👥 Users in room:', clients.length);
   }
 
-  // ✅ SEND MESSAGE
   @SubscribeMessage('sendMessage')
   async handleSendMessage(client: Socket, dto: CreateChatDto) {
     const senderId = this.onlineUsers.get(client.id);

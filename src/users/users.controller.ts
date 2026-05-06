@@ -18,8 +18,8 @@ export class UsersController {
   @Patch('profile')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(req.user._id.toString(), updateUserDto);
+  update(@Request() req, @Body() dto: UpdateUserDto) {
+    return this.usersService.update(req.user._id.toString(), dto);
   }
   @Get('list')
   @UseGuards(JwtAuthGuard)

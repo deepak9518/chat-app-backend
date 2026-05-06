@@ -47,4 +47,14 @@ export class RoomsController {
   async getById(@Param('id') id: string) {
     return this.roomsService.findById(id);
   }
+  @Get(':roomId/chats')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getChats(
+    @Param('roomId') roomId: string,
+    @Query() query: GetChatDto,
+    @Request() req,
+  ) {
+    return this.chatsService.findAll(roomId, query);
+  }
 }
