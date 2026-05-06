@@ -8,11 +8,6 @@ export class RegisterAuthDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @MinLength(6)
-  username!: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsEmail()
   email!: string;
 
