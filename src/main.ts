@@ -12,7 +12,6 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:3001',
       'https://chat-app-frontend-tau-liart.vercel.app',
     ],
     credentials: true,
