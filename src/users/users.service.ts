@@ -8,8 +8,40 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schemas';
 import { Model, Types } from 'mongoose';
-import { PasswordHashHelper } from 'src/helper/hash/password-hash.helper';
+import * as bcrypt from 'bcrypt';
 
+const generateRandomString = (length: number): string => {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters.charAt(randomIndex);
+  }
+
+  return result;
+};
+export const hashPassword = async (
+  password: string,
+): Promise<{ hash: string; passKey: string }> => {
+  const passKey = generateRandomString(10);
+
+  const hash = await bcrypt.hash(password + passKey, 10);
+
+  return {
+    passKey,
+    hash,
+  };
+};
+
+const comparePassword = async (
+  password: string,
+  passKey: string,
+  hash: string,
+): Promise<boolean> => {
+  return bcrypt.compare(password + passKey, hash);
+};
 const USER_SAFE_FIELDS =
   '_id name email online lastSeen avatar createdAt updatedAt';
 
@@ -18,7 +50,7 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async create(dto: RegisterAuthDto) {
-    const passwordGenerator = await PasswordHashHelper.hash(dto.password!);
+    const passwordGenerator = await hashPassword(dto.password!);
     dto.password = passwordGenerator.hash;
 
     const createdUser = new this.userModel({
@@ -45,7 +77,7 @@ export class UsersService {
       throw new NotFoundException('Could not find user.');
     }
 
-    const isPasswordCorrect = await PasswordHashHelper.comparePassword(
+    const isPasswordCorrect = await comparePassword(
       password,
       user.password_key,
       user.password,

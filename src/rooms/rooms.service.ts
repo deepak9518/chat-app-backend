@@ -12,7 +12,8 @@ import { CreateRoomDto } from './dto/create-room.dto';
 import { Chat } from 'src/chats/schemas/chat.schemas';
 import { User } from 'src/users/schemas/user.schemas';
 
-import { generateInviteCode } from 'src/helper/string/string.helper';
+const generateInviteCode = () =>
+  Math.random().toString(36).substring(2, 8);
 
 @Injectable()
 export class RoomsService {
