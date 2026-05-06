@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
@@ -8,11 +17,10 @@ import { ChatsService } from 'src/chats/chats.service';
 
 @Controller('rooms')
 export class RoomsController {
-
   constructor(
     private readonly roomsService: RoomsService,
     private readonly chatsService: ChatsService,
-  ) { }
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -28,11 +36,15 @@ export class RoomsController {
     return this.roomsService.getByRequest(req.user._id.toString());
   }
 
-  @Get(':id/chats')
+  @Get('personal/:userId')
+  async getPersonalRoom(@Request() req, @Param('userId') otherUserId: string) {
+    return this.roomsService.findPersonalRoom(req.user._id, otherUserId);
+  }
+
+  @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiParam({ name: 'id', required: true })
-  getChats(@Param('id') id, @Query() dto: GetChatDto) {
-    return this.chatsService.findAll(id, new GetChatDto(dto));
+  async getById(@Param('id') id: string) {
+    return this.roomsService.findById(id);
   }
 }

@@ -4,6 +4,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { RoomsModule } from './rooms/rooms.module';
+import { ChatsModule } from './chats/chats.module';
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,6 +36,8 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
     }),
     UsersModule,
     AuthModule,
+    RoomsModule,
+    ChatsModule,
   ],
 })
 export class AppModule {}
